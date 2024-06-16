@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IMS-LoginInterface</title>
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <style>
+        body{
+            background-color: rgba(1,107,75,.9058823529411765);
+            background-image: url(images/cover.jpg);
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+            
+        }
+        input, button {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-card"
+     style="width:600px;margin:100px auto;padding-top:20px;padding-bottom: 20px;padding-right: 10px;background-color: white center;background-size:cover;border-radius: 20px;box-shadow: 0px 0px 30px 10px rgba(0,0,0,0.3);">
+     <img src="images/nsuk.png" style="width: 200px;margin: auto;display: flex;padding-bottom: 20px;">
+     <h1 style="text-align:center;margin-bottom:20px;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;color: #2b6e10;">NSUK Instant Communication System</h1>
+    <form class="layui-form" action="#" id="form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">Matric:</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" id="username" required lay-verify="required" placeholder="Please enter the matric number"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Password</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" id="password" required lay-verify="required" placeholder="Please enter the password"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <label class="layui-btn" lay-filter="formDemo" id="submit" style="background:#2b6e10;border-radius: 10px;width: 80%;">Login</label>
+                <button type="reset" class="layui-btn layui-btn-primary" style="background: #f5481d;color:white;border-radius: 10px;">Reset</button>
+            </div>
+        </div>  
+    </form>
+</div>
+<script src="js/jquery.min.js"></script>
+<script src="layui/layui.js"></script>
+<script>
+    $("#submit").click(function () {
+        submit();
+    });
+
+    function submit() {
+        var username = $('#username').val();
+        var password = $('#password').val();
+        $.ajax({
+            url: 'api/login/checkLogin',
+            type: 'POST',
+            data: {username: username, password: password},
+            success: function (res) {
+                if (res) {
+                    if (res.code == 1000) {
+                        sessionStorage.setItem('id', res.data.id);
+                        location.href = 'index.html';
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                } else {
+                    layer.msg('Network Error!');
+                }
+            },
+			error:function(err){
+				layer.msg('Network error, please try again later!');
+			}
+        });
+    }
+
+    $(function () {
+        document.onkeydown = function (e) {
+            var ev = document.all ? window.event : e;
+            if (ev.keyCode == 13) {
+                submit();
+            }
+        }
+    });
+</script>
+</body>
+</html>
